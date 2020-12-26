@@ -1,13 +1,13 @@
-import axios, { AxiosInstance } from 'axios';
 import { boot } from 'quasar/wrappers';
+import * as rules from 'src/const/rules.const';
 
 declare module 'vue/types/vue' {
   interface Vue {
-    $axios: AxiosInstance;
+    $rule: typeof rules;
   }
 }
 
 export default boot(({ Vue }) => {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-  Vue.prototype.$axios = axios;
+  Vue.prototype.$rule = rules;
 });

@@ -1,33 +1,36 @@
-import { store } from 'quasar/wrappers'
-import Vuex from 'vuex'
+import { store } from 'quasar/wrappers';
+import RTCModule from 'src/store/rtc.module';
+import Vuex from 'vuex';
+import { getModule } from 'vuex-module-decorators';
 
-// import example from './module-example';
-// import { ExampleStateInterface } from './module-example/state';
-
-/*
- * If not building with SSR mode, you can
- * directly export the Store instantiation
- */
+declare module 'vue/types/vue' {
+  interface Vue {
+    $RTCStore: RTCModule;
+  }
+}
 
 export interface StateInterface {
   // Define your own store structure, using submodules if needed
   // example: ExampleStateInterface;
   // Declared as unknown to avoid linting issue. Best to strongly type as per the line above.
-  example: unknown;
+  rtc: RTCModule
 }
 
 export default store(function ({ Vue }) {
-  Vue.use(Vuex)
+  Vue.use(Vuex);
 
   const Store = new Vuex.Store<StateInterface>({
     modules: {
-      // example
-    },
+      rtc: RTCModule
+    }
 
     // enable strict mode (adds overhead!)
     // for dev mode only
-    strict: !!process.env.DEBUGGING
-  })
+    // strict: !!process.env.DEBUGGING
+  });
 
-  return Store
-})
+  Vue.prototype.$RTCStore = getModule(RTCModule, Store);
+  Vue.prototype.$RTCStore.mountEvent();
+
+  return Store;
+});
