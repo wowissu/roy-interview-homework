@@ -42,10 +42,10 @@
             </div>
           </q-card-section>
           <q-card-actions>
-            <q-btn color="primary" :disabled="disableJoin" @click="$RTCStore.joinEvent(option)">
+            <q-btn color="primary" :disabled="disableJoin" @click="joinEvent">
               join
             </q-btn>
-            <q-btn color="primary" plain :disabled="!disableJoin" @click="$RTCStore.leaveEvent()">
+            <q-btn color="primary" plain :disabled="!disableJoin" @click="leaveEvent">
               leave
             </q-btn>
           </q-card-actions>
@@ -74,6 +74,14 @@ export default class MainLayout extends Vue {
 
   get disableJoin() {
     return this.$RTCStore.disableJoin;
+  }
+
+  public joinEvent() {
+    return this.$RTCStore.joinEvent(this.option)
+  }
+
+  public leaveEvent() {
+    return this.$RTCStore.leaveEvent();
   }
 }
 </script>

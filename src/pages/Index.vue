@@ -1,27 +1,9 @@
 <template>
-  <q-page class="col grid-wrap fit" :class="`got-friend-${remoteStreams.length}`" >
-    <!-- <div class="hello">
-      <div class="agora-view q-mt-lg">
-        <q-card class="agora-video q-pa-none">
-          <q-responsive :ratio="4/3">
-            <div class="rounded-borders bg-primary text-white flex flex-center">
-              <StreamPlayer v-if="localStream" :stream="localStream" :dom-id="localStream.getId()" />
-              <div v-else>
-                <q-icon size="xl" name="mdi-message-video"></q-icon>
-              </div>
-            </div>
-          </q-responsive>
-        </q-card>
-
-      </div>
-    </div> -->
-
+  <q-page class="col grid-wrap fit" :class="`got-friend-${remoteStreams.length}`">
     <div class="mm">
-      <StreamPlayer :stream="localStream">
-        <template #bar>
-          <q-chip color="primary" text-color="white" icon="mdi-account-circle">
-            You
-          </q-chip>
+      <StreamPlayer :stream="localStream" is-me>
+        <template #waiting>
+          <q-btn color="primary" icon="mdi-video-account" label="Join" no-caps :disabled="$RTCStore.disableJoin" :loading="$RTCStore.disableJoin" @click="$RTCStore.joinEvent()" />
         </template>
       </StreamPlayer>
     </div>
@@ -31,25 +13,6 @@
         <StreamPlayer :stream="remoteStream" />
       </div>
     </div>
-
-    <!-- <div class="main-box full-width col bg-primary justify-center flex">
-      <StreamPlayer v-if="focusStream" :stream="focusStream" :dom-id="focusStream.getId()" />
-      <div v-else class="text-white col flex justify-center q-pa-xl">
-        <q-icon size="xl" name="mdi-message-video"></q-icon>
-      </div>
-    </div>
-    <div class="box-nav full-width flex flex-start">
-      <div class="nav-video">
-        <div class="fit">
-          <div class="rounded-borders bg-primary text-white flex flex-center">
-            <StreamPlayer v-if="localStream" :stream="localStream" :dom-id="localStream.getId()" />
-            <div v-else>
-              <q-icon size="xl" name="mdi-message-video"></q-icon>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div> -->
   </q-page>
 </template>
 
@@ -68,9 +31,9 @@ import RTCModule from 'src/store/rtc.module';
     this.rtc.on('publish-stream', ({ stream }) => {
       if (this.focusStream === null) {
         this.focusStream = stream;
-        console.log({stream});
+        console.log({ stream });
       }
-    })
+    });
   }
 })
 export default class HomePage extends Vue {
@@ -87,8 +50,8 @@ export default class HomePage extends Vue {
     'ml',
     'mr',
     'tr',
-    'bm',
-  ]
+    'bm'
+  ];
 
   public option: RTCClientOption = {
     appid: '1b8b222b491542f9943051af647cf6e8',
@@ -102,19 +65,11 @@ export default class HomePage extends Vue {
   }
 
   get localStream() {
-    return this.$RTCStore.localStream
+    return this.$RTCStore.localStream;
   }
 
   get remoteStreams() {
     return this.$RTCStore.remoteStreams;
-  }
-
-  public judge(detail: string) {
-    this.$q.notify({
-      type: 'warning',
-      message: `Please enter the ${detail}`,
-      position: 'top-left'
-    });
   }
 }
 </script>
@@ -180,8 +135,8 @@ export default class HomePage extends Vue {
       "bl bm br";
 
     &.got-friend-0 {
-      grid-template-columns: auto 50vw auto;
-      grid-template-rows: auto 50vw auto;
+      grid-template-columns: auto 50vh auto;
+      grid-template-rows: auto 50vh auto;
     }
 
     &.got-friend-1 {

@@ -3,6 +3,7 @@ import RTCClient, { RTCClientOption } from 'src/agora-rtc-client';
 import { EventEmitter } from 'events';
 import AgoraRTC from 'agora-rtc-sdk';
 import { Notify } from 'quasar';
+
 import { RTCError } from 'src/exceptions/rtc.exception';
 import { log } from 'src/utils';
 
@@ -77,7 +78,7 @@ export default class RTCModule extends VuexModule {
 
     rtc.on('peer-online', (evt) => {
       Notify.create({
-        type: 'info',
+        type: 'rtc-info',
         message: `Peer ${evt.uid} is online`
       });
     });
@@ -94,7 +95,7 @@ export default class RTCModule extends VuexModule {
   }
 
   @Action({ rawError: true })
-  public async joinEvent (option = this.option) {
+  public async joinEvent(option = this.option) {
     try {
       if (!option.appid) {
         throw new JudgeError('Appid');
@@ -108,7 +109,7 @@ export default class RTCModule extends VuexModule {
 
       Notify.create({
         message: 'Join Success',
-        type: 'positive',
+        type: 'rtc-success',
         icon: 'mdi-account-check'
       });
 
@@ -117,7 +118,7 @@ export default class RTCModule extends VuexModule {
 
         Notify.create({
           message: 'Publish Success',
-          type: 'positive',
+          type: 'rtc-success',
           icon: 'mdi-video-check'
         });
       } catch (err) {
@@ -147,7 +148,7 @@ export default class RTCModule extends VuexModule {
 
       Notify.create({
         message: 'Leave Success',
-        type: 'info'
+        type: 'rtc-info'
       });
     } catch (err) {
       Notify.create({
