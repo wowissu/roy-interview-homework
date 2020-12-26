@@ -6,13 +6,13 @@
           flat
           dense
           round
-          icon="menu"
+          icon="mdi-menu"
           aria-label="Menu"
           @click="leftDrawerOpen = !leftDrawerOpen"
         />
 
         <q-toolbar-title>
-          Quasar App
+          Agora Basic Video Call
         </q-toolbar-title>
 
         <div>Quasar v{{ $q.version }}</div>
@@ -26,17 +26,30 @@
       content-class="bg-grey-1"
     >
       <q-list>
-        <q-item-label
-          header
-          class="text-grey-8"
-        >
+        <q-item-label header class="text-grey-8">
           Essential Links
         </q-item-label>
-        <EssentialLink
-          v-for="link in essentialLinks"
-          :key="link.title"
-          v-bind="link"
-        />
+        <q-card>
+          <q-card-section>
+            <div>
+              <q-input v-model="option.appid" label="* Appid" placeholder="Appid" clearable :rules="[$rule.required()]" />
+            </div>
+            <div>
+              <q-input v-model="option.token" label="* Token" placeholder="Token" clearable :rules="[$rule.required()]" />
+            </div>
+            <div>
+              <q-input v-model="option.channel" label="* Channel Name" placeholder="Channel Name" clearable :rules="[$rule.required()]" />
+            </div>
+          </q-card-section>
+          <q-card-actions>
+            <q-btn color="primary" :disabled="disableJoin" @click="$RTCStore.joinEvent(option)">
+              join
+            </q-btn>
+            <q-btn color="primary" plain :disabled="!disableJoin" @click="$RTCStore.leaveEvent()">
+              leave
+            </q-btn>
+          </q-card-actions>
+        </q-card>
       </q-list>
     </q-drawer>
 
@@ -47,60 +60,20 @@
 </template>
 
 <script lang="ts">
-import EssentialLink from 'components/EssentialLink.vue'
+import { extend } from 'quasar';
+import { RTCClientOption } from 'src/agora-rtc-client';
+import { Vue, Component } from 'vue-property-decorator';
 
-const linksData = [
-  {
-    title: 'Docs',
-    caption: 'quasar.dev',
-    icon: 'school',
-    link: 'https://quasar.dev'
-  },
-  {
-    title: 'Github',
-    caption: 'github.com/quasarframework',
-    icon: 'code',
-    link: 'https://github.com/quasarframework'
-  },
-  {
-    title: 'Discord Chat Channel',
-    caption: 'chat.quasar.dev',
-    icon: 'chat',
-    link: 'https://chat.quasar.dev'
-  },
-  {
-    title: 'Forum',
-    caption: 'forum.quasar.dev',
-    icon: 'record_voice_over',
-    link: 'https://forum.quasar.dev'
-  },
-  {
-    title: 'Twitter',
-    caption: '@quasarframework',
-    icon: 'rss_feed',
-    link: 'https://twitter.quasar.dev'
-  },
-  {
-    title: 'Facebook',
-    caption: '@QuasarFramework',
-    icon: 'public',
-    link: 'https://facebook.quasar.dev'
-  },
-  {
-    title: 'Quasar Awesome',
-    caption: 'Community Quasar projects',
-    icon: 'favorite',
-    link: 'https://awesome.quasar.dev'
-  }
-]
-
-import { Vue, Component } from 'vue-property-decorator'
-
-@Component({
-  components: { EssentialLink }
+@Component<MainLayout>({
+  name: 'MainLayout',
 })
 export default class MainLayout extends Vue {
-  leftDrawerOpen = false;
-  essentialLinks = linksData;
+  public leftDrawerOpen = false;
+
+  public option = extend<RTCClientOption>(true, {}, this.$RTCStore.option);
+
+  get disableJoin() {
+    return this.$RTCStore.disableJoin;
+  }
 }
 </script>
